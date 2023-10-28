@@ -1,4 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:movies_app/app/data/services/remote/authentication_service.dart';
 import 'package:movies_app/app/domain/either.dart';
 import 'package:movies_app/app/domain/enums/sign_in_fail.dart';
 import 'package:movies_app/app/domain/models/user.dart';
@@ -8,8 +9,9 @@ const _key = 'sessionId';
 
 class AuthenticationRepositoryImpl implements AuthenticationRepository {
   final FlutterSecureStorage _flutterSecureStorage;
+  final AuthenticationService _authenticationService;
 
-  AuthenticationRepositoryImpl(this._flutterSecureStorage);
+  AuthenticationRepositoryImpl(this._flutterSecureStorage, this._authenticationService);
   
   @override
   Future<User?> getUserData() {
@@ -27,17 +29,28 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
     String username,
     String password,
   ) async {
-    if (username != 'test') {
-      return Either.left(SignInFail.notFound);
+    final requestToken = await _authenticationService.createRequestToken();
+
+    if (requestToken == null) {
+      return Either.left(SignInFail.unknown);
     }
 
-    if (password != '123456') {
-      return Either.left(SignInFail.unauthorized);
-    }
+    final loginResult = await _authenticationService.createSessionWithLogin(
+      userName: username,
+      password: password,
+      requestToken: requestToken
+    );
 
-    await _flutterSecureStorage.write(key: _key, value: 'sessionId');
 
-    return Either.right(User());
+    return loginResult.when(
+      (failure) {
+        return Either.left(failure);
+      },
+      (requestToken) async {
+        await _flutterSecureStorage.write(key: _key, value: 'sessionId');
+        return Either.right(User());
+      },
+    );
   }
   
   @override

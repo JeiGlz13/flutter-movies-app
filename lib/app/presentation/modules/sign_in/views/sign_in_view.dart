@@ -98,6 +98,7 @@ class _SignInViewState extends State<SignInView> {
         SignInFail.notFound: 'Not Found',
         SignInFail.unauthorized: 'Unauthorized',
         SignInFail.unknown: 'Unknown',
+        SignInFail.network: 'Network error',
       }[failure];
 
       setState(() {
