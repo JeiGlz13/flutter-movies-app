@@ -29,26 +29,35 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
     String username,
     String password,
   ) async {
-    final requestToken = await _authenticationService.createRequestToken();
+    final requestTokenResult = await _authenticationService.createRequestToken();
 
-    if (requestToken == null) {
-      return Either.left(SignInFail.unknown);
-    }
-
-    final loginResult = await _authenticationService.createSessionWithLogin(
-      userName: username,
-      password: password,
-      requestToken: requestToken
-    );
-
-
-    return loginResult.when(
-      (failure) {
-        return Either.left(failure);
-      },
+    return requestTokenResult.when(
+      (failure) => Either.left(failure),
       (requestToken) async {
-        await _flutterSecureStorage.write(key: _key, value: 'sessionId');
-        return Either.right(User());
+        final loginResult = await _authenticationService.createSessionWithLogin(
+          userName: username,
+          password: password,
+          requestToken: requestToken ?? ''
+        );
+
+        return loginResult.when(
+          (failure) async {
+            return Either.left(failure);
+          },
+          (newRequestToken) async {
+            final sessionResponse = await _authenticationService.createSession(newRequestToken);
+            
+            return sessionResponse.when(
+              (sessionFail) async {
+                return Either.left(sessionFail);
+              },
+              (sessionId) async {
+                await _flutterSecureStorage.write(key: _key, value: sessionId);
+                return Either.right(User());
+              }
+            );
+          },
+        );
       },
     );
   }

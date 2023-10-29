@@ -52,7 +52,7 @@ class _SignInViewState extends State<SignInView> {
                       hintText: 'Password'
                     ),
                     validator: (text) {
-                      text = text?.replaceAll(' ', '').toLowerCase() ?? '';
+                      text = text?.replaceAll(' ', '') ?? '';
                       return (text.isEmpty) ? 'Invalid username' : null;
                     },
                   ),

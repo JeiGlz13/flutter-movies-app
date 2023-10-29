@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/app/data/repositories_implementation/connectivity_repository_impl.dart';
-import 'package:movies_app/app/domain/repositories/authentication_repository.dart';
-import 'package:movies_app/app/domain/repositories/connectivity_repository.dart';
 import 'package:movies_app/app/presentation/routes/routes.dart';
 import 'package:movies_app/main.dart';
 
