@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:movies_app/app/data/http/http.dart';
 import 'package:movies_app/app/domain/either.dart';
 import 'package:movies_app/app/domain/enums/sign_in_fail.dart';
@@ -32,7 +30,7 @@ class AuthenticationService {
       final result = await _http.request(
         '/authentication/token/new',
         onSuccess: (responseBody) {
-          final json = Map<String, dynamic>.from(jsonDecode(responseBody));
+          final json = responseBody as Map;
           return json['request_token'] as String;
         },
       );
@@ -52,7 +50,7 @@ class AuthenticationService {
       '/authentication/token/validate_with_login',
       method: HttpMethod.post,
       onSuccess: (responseBody) {
-        final json = Map<String, dynamic>.from(jsonDecode(responseBody));
+        final json = responseBody as Map;
         return json['request_token'] as String;
       },
       body: {
@@ -72,7 +70,7 @@ class AuthenticationService {
     final result = await _http.request(
       '/authentication/session/new',
       onSuccess: (responseBody) {
-        final json = Map<String, dynamic>.from(jsonDecode(responseBody));
+        final json = responseBody as Map;
         return json['session_id'] as String;
       },
       method: HttpMethod.post,

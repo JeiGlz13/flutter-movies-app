@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:developer';
 
 import 'package:http/http.dart';
 import 'package:movies_app/app/domain/either.dart';
 
+part 'failure.dart';
+part 'parse_response_body.dart';
 class Http {
   final String _baseUrl;
   final String _token;
@@ -14,13 +17,15 @@ class Http {
   Future<Either<HttpFailure, T>> request<T>(
     String path,
     {
-      required T Function(String responseBody) onSuccess,
+      required T Function(dynamic responseBody) onSuccess,
       HttpMethod method = HttpMethod.get,
       Map<String, String> headers = const {},
       Map<String, String> queryParameters = const {},
       Map<String, dynamic> body = const {},
     }
   ) async {
+    Map<String, dynamic> logs = {};
+    StackTrace? stackTrace;
     try {
       late final Response response;
       Uri url = Uri.parse(
@@ -36,7 +41,13 @@ class Http {
         'content-type': 'application/json',
         ...headers,
       };
-  
+
+      logs = {
+        'url': url.toString(),
+        'method': method.name,
+        'body': body,
+      };
+
       switch (method) {
         case HttpMethod.get:
           response = await _client.get(url, headers: headers);
@@ -56,16 +67,30 @@ class Http {
       }
 
       final statusCode = response.statusCode;
+      logs = {
+        ...logs,
+        'statusCode': statusCode,
+        'response': _parseResponseBody(response.body),
+      };
       if (statusCode >= 200 && statusCode < 300) {
-        return Either.right(onSuccess(response.body));
+        return Either.right(onSuccess(_parseResponseBody(response.body)));
       }
 
       return Either.left(
         HttpFailure(statusCode: statusCode),
       );
-    } catch (e) {
+    } catch (e, s) {
       print(e);
+      stackTrace = s;
+      logs = {
+        ...logs,
+        'exception': e.runtimeType,
+      };
       if (e is SocketException || e is ClientException) {
+        logs = {
+          ...logs,
+          'exception': 'NetworkException',
+        };
         return Either.left(
           HttpFailure(
             exception: NetworkException()
@@ -74,15 +99,17 @@ class Http {
       }
 
       return Either.left(HttpFailure(exception: e));
+    } finally {
+      log('''
+---------------------------------------------------
+                    LOG
+${const JsonEncoder.withIndent(' ').convert(logs)}
+--------------------------------------------------
+''',
+  stackTrace: stackTrace,
+);
     }
   }
-}
-
-class HttpFailure {
-  final int? statusCode;
-  final Object? exception;
-
-  HttpFailure({this.statusCode, this.exception});
 }
 
 class NetworkException {

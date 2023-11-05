@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/app/domain/enums/sign_in_fail.dart';
+import 'package:movies_app/app/domain/repositories/authentication_repository.dart';
 import 'package:movies_app/app/presentation/routes/routes.dart';
 import 'package:movies_app/main.dart';
+import 'package:provider/provider.dart';
 
 class SignInView extends StatefulWidget {
   const SignInView({super.key});
@@ -90,7 +92,7 @@ class _SignInViewState extends State<SignInView> {
     setState(() {
       _isLoading = true;
     });
-    final result = await Injector.of(context).authenticationRepository
+    final result = await context.read<AuthenticationRepository>()
       .signIn(_username, _password);
 
     result.when((failure) {
