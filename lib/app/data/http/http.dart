@@ -80,11 +80,10 @@ class Http {
         HttpFailure(statusCode: statusCode),
       );
     } catch (e, s) {
-      print(e);
       stackTrace = s;
       logs = {
         ...logs,
-        'exception': e.runtimeType,
+        'exception': e.runtimeType.toString(),
       };
       if (e is SocketException || e is ClientException) {
         logs = {
@@ -100,10 +99,11 @@ class Http {
 
       return Either.left(HttpFailure(exception: e));
     } finally {
+      final convertedLogs = const JsonEncoder.withIndent(' ').convert(logs);
       log('''
 ---------------------------------------------------
                     LOG
-${const JsonEncoder.withIndent(' ').convert(logs)}
+$convertedLogs
 --------------------------------------------------
 ''',
   stackTrace: stackTrace,
