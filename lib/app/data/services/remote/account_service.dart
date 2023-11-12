@@ -13,11 +13,7 @@ class AccountService {
         'session_id': sessionId
       },
       onSuccess: (json) {
-        return User(
-          id: json['id'],
-          username: json['username'],
-          name: json['name'],
-        );
+        return User.fromJson(json);
       },
     );
 

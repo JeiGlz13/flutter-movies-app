@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movies_app/app/domain/repositories/account_repository.dart';
 import 'package:movies_app/app/domain/repositories/authentication_repository.dart';
 import 'package:movies_app/app/domain/repositories/connectivity_repository.dart';
+import 'package:movies_app/app/presentation/global/controllers/session_controller.dart';
 import 'package:movies_app/app/presentation/routes/routes.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +26,7 @@ class _SplashViewState extends State<SplashView> {
     final ConnectivityRepository connectivityRepository = context.read();
     final AuthenticationRepository authenticationRepository = context.read();
     final AccountRepository accountRepository = context.read();
+    final SessionController sessionController = context.read();
     
     final bool hasInternet = await connectivityRepository.hasInternet;
 
@@ -33,6 +35,7 @@ class _SplashViewState extends State<SplashView> {
       if (isSigned) {
         final user = await accountRepository.getUserData();
         if (user != null) {
+          sessionController.setUser(user);
           _goTo(Routes.home);
         } else if(mounted) {
           _goTo(Routes.signIn);

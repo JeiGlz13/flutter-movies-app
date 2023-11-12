@@ -4,6 +4,7 @@ import 'package:movies_app/app/data/repositories_implementation/account_reposito
 import 'package:movies_app/app/data/services/local/session_service.dart';
 import 'package:movies_app/app/data/services/remote/account_service.dart';
 import 'package:movies_app/app/domain/repositories/account_repository.dart';
+import 'package:movies_app/app/presentation/global/controllers/session_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -44,6 +45,11 @@ void main() {
             AuthenticationService(http),
             sessionService,
             accountService,
+          ),
+        ),
+        ChangeNotifierProvider<SessionController>(
+          create: (context) => SessionController(
+            authenticationRepository: context.read<AuthenticationRepository>(),
           ),
         ),
       ],
