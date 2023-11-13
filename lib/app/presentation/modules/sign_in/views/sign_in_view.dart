@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/app/domain/repositories/authentication_repository.dart';
 import 'package:movies_app/app/presentation/modules/sign_in/controller/sign_in_controller.dart';
-import 'package:movies_app/app/presentation/modules/sign_in/controller/sign_in_state.dart';
+import 'package:movies_app/app/presentation/modules/sign_in/controller/state/sign_in_state.dart';
 import 'package:movies_app/app/presentation/modules/sign_in/views/widgets/submit_button.dart';
 import 'package:provider/provider.dart';
 

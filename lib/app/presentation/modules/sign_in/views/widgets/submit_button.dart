@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/app/domain/enums/sign_in_fail.dart';
-import 'package:movies_app/app/domain/repositories/authentication_repository.dart';
+import 'package:movies_app/app/domain/enums/fails/sign_in/sign_in_failure.dart';
 import 'package:movies_app/app/presentation/global/controllers/session_controller.dart';
 import 'package:movies_app/app/presentation/modules/sign_in/controller/sign_in_controller.dart';
 import 'package:movies_app/app/presentation/routes/routes.dart';
@@ -34,25 +33,27 @@ Future<void> _submit(BuildContext context) async {
   if (!signInController.isMounted) {
     return;
   }
-  
 
   final result = await signInController.submit();
 
-  result.when((failure) {
-    final message = {
-      SignInFail.notFound: 'Not Found',
-      SignInFail.unauthorized: 'Unauthorized',
-      SignInFail.unknown: 'Unknown',
-      SignInFail.network: 'Network error',
-    }[failure];
+  result.when(
+    error: (failure) {
+      final String message = failure.when(
+        notFound: () => 'Not found',
+        network: () => 'Network error',
+        unauthorized: () => 'Unauthorized',
+        unknown: () => 'Unknown',
+      );
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message ?? ''))
-    );
-    return message;
-  }, (user) {
-    final SessionController sessionController = context.read();
-    sessionController.setUser(user);
-    Navigator.pushReplacementNamed(context, Routes.home);
-  });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message))
+      );
+      return message;
+    },
+    success: (user) {
+      final SessionController sessionController = context.read();
+      sessionController.setUser(user);
+      Navigator.pushReplacementNamed(context, Routes.home);
+    },
+  );
 }

@@ -1,6 +1,6 @@
 import 'package:movies_app/app/data/services/local/session_service.dart';
 import 'package:movies_app/app/data/services/remote/account_service.dart';
-import 'package:movies_app/app/domain/models/user.dart';
+import 'package:movies_app/app/domain/models/user/user.dart';
 import 'package:movies_app/app/domain/repositories/account_repository.dart';
 
 class AccountRepositoryImpl implements AccountRepository {

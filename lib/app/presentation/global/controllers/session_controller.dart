@@ -1,4 +1,4 @@
-import 'package:movies_app/app/domain/models/user.dart';
+import 'package:movies_app/app/domain/models/user/user.dart';
 import 'package:movies_app/app/domain/repositories/authentication_repository.dart';
 import 'package:movies_app/app/presentation/global/state_notifier.dart';
 

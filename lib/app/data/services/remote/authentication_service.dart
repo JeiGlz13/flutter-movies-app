@@ -1,32 +1,32 @@
 import 'package:movies_app/app/data/http/http.dart';
 import 'package:movies_app/app/domain/either.dart';
-import 'package:movies_app/app/domain/enums/sign_in_fail.dart';
+import 'package:movies_app/app/domain/enums/fails/sign_in/sign_in_failure.dart';
 
 class AuthenticationService {
   final Http _http;
 
   AuthenticationService(this._http);
 
-  Either<SignInFail, String> _handleFailure(HttpFailure httpFailure) {
+  Either<SignInFailure, String> _handleFailure(HttpFailure httpFailure) {
     if (httpFailure.statusCode != null) {
       switch (httpFailure.statusCode) {
         case 401:
-          return Either.left(SignInFail.unauthorized);      
+          return Either.error(value: SignInFailure.unauthorized());      
         case 404:
-          return Either.left(SignInFail.notFound);
+          return Either.error(value: SignInFailure.notFound());
         default:
-          return Either.left(SignInFail.unknown);
+          return Either.error(value: SignInFailure.unknown());
       }
     }
 
     if (httpFailure.exception is NetworkException) {
-      return Either.left(SignInFail.network);
+      return Either.error(value: SignInFailure.network());
     }
 
-    return Either.left(SignInFail.unknown);
+    return Either.error(value: SignInFailure.unknown());
   }
 
-  Future<Either<SignInFail, String?>> createRequestToken() async {
+  Future<Either<SignInFailure, String?>> createRequestToken() async {
       final result = await _http.request(
         '/authentication/token/new',
         onSuccess: (responseBody) {
@@ -36,12 +36,12 @@ class AuthenticationService {
       );
 
       return result.when(
-        _handleFailure,
-        (token) => Either.right(token),
+        error: _handleFailure,
+        success: (token) => Either.success(value: token),
       );
   }
 
-  Future<Either<SignInFail, String>> createSessionWithLogin({
+  Future<Either<SignInFailure, String>> createSessionWithLogin({
     required String userName,
     required String password,
     required String requestToken,
@@ -61,12 +61,12 @@ class AuthenticationService {
     );
 
     return result.when(
-      _handleFailure,
-      (requestToken) => Either.right(requestToken),
+      error: _handleFailure,
+      success:  (requestToken) => Either.success(value: requestToken),
     );
   }
 
-  Future<Either<SignInFail, String>> createSession(String requestToken) async {
+  Future<Either<SignInFailure, String>> createSession(String requestToken) async {
     final result = await _http.request(
       '/authentication/session/new',
       onSuccess: (responseBody) {
@@ -80,8 +80,8 @@ class AuthenticationService {
     );
 
     return result.when(
-      _handleFailure,
-      (sessionId) => Either.right(sessionId),
+      error: _handleFailure,
+       success: (sessionId) => Either.success(value: sessionId),
     );
   }
 }

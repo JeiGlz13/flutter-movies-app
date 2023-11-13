@@ -73,11 +73,11 @@ class Http {
         'response': _parseResponseBody(response.body),
       };
       if (statusCode >= 200 && statusCode < 300) {
-        return Either.right(onSuccess(_parseResponseBody(response.body)));
+        return Either.success(value: onSuccess(_parseResponseBody(response.body)));
       }
 
-      return Either.left(
-        HttpFailure(statusCode: statusCode),
+      return Either.error(
+        value: HttpFailure(statusCode: statusCode),
       );
     } catch (e, s) {
       stackTrace = s;
@@ -90,14 +90,14 @@ class Http {
           ...logs,
           'exception': 'NetworkException',
         };
-        return Either.left(
-          HttpFailure(
+        return Either.error(
+          value: HttpFailure(
             exception: NetworkException()
           ),
         );
       }
 
-      return Either.left(HttpFailure(exception: e));
+      return Either.error(value: HttpFailure(exception: e));
     } finally {
       final convertedLogs = const JsonEncoder.withIndent(' ').convert(logs);
       log('''

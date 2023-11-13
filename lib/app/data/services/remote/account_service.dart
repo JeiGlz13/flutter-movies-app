@@ -1,5 +1,5 @@
 import 'package:movies_app/app/data/http/http.dart';
-import 'package:movies_app/app/domain/models/user.dart';
+import 'package:movies_app/app/domain/models/user/user.dart';
 
 class AccountService {
   final Http _http;
@@ -18,8 +18,8 @@ class AccountService {
     );
 
     return result.when(
-      (_) => null,
-      (user) => user,
+      error: (_) => null,
+      success: (user) => user,
     );
   }
 }
