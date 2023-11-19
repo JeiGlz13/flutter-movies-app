@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:movies_app/app/data/repositories_implementation/account_repository_impl.dart';
+import 'package:movies_app/app/data/repositories_implementation/popular_repository_impl.dart';
 import 'package:movies_app/app/data/services/local/session_service.dart';
 import 'package:movies_app/app/data/services/remote/account_service.dart';
+import 'package:movies_app/app/data/services/remote/popular_service.dart';
 import 'package:movies_app/app/domain/repositories/account_repository.dart';
+import 'package:movies_app/app/domain/repositories/popular_repository.dart';
 import 'package:movies_app/app/presentation/global/controllers/session_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -45,6 +48,11 @@ void main() {
             AuthenticationService(http),
             sessionService,
             accountService,
+          ),
+        ),
+        Provider<PopularRepository>(
+          create: (_) => PopularRepositoryImpl(
+            PopularService(http),
           ),
         ),
         ChangeNotifierProvider<SessionController>(

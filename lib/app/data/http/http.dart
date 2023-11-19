@@ -77,7 +77,10 @@ class Http {
       }
 
       return Either.error(
-        value: HttpFailure(statusCode: statusCode),
+        value: HttpFailure(
+          statusCode: statusCode,
+          data: _parseResponseBody(response.body),
+        ),
       );
     } catch (e, s) {
       stackTrace = s;

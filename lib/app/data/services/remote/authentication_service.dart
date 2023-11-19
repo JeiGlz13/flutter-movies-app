@@ -11,6 +11,9 @@ class AuthenticationService {
     if (httpFailure.statusCode != null) {
       switch (httpFailure.statusCode) {
         case 401:
+          if((httpFailure.data is Map) && ((httpFailure.data as Map)['status_code'] == 32)) {
+            return Either.error(value: SignInFailure.notVerified());
+          }
           return Either.error(value: SignInFailure.unauthorized());      
         case 404:
           return Either.error(value: SignInFailure.notFound());

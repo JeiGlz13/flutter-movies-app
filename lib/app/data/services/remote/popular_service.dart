@@ -1,5 +1,7 @@
 import 'package:movies_app/app/data/http/http.dart';
+import 'package:movies_app/app/data/services/utils/handle_failure.dart';
 import 'package:movies_app/app/domain/either.dart';
+import 'package:movies_app/app/domain/enums/fails/http_request/http_request_failure.dart';
 import 'package:movies_app/app/domain/models/trend_media/trend_media.dart';
 import 'package:movies_app/app/domain/typedefs.dart';
 
@@ -8,7 +10,7 @@ class PopularService {
 
   PopularService(this._http);
 
-  Future<Either<HttpFailure, List<TrendMedia>>> getPopularMovies() async {
+  Future<Either<HttpRequestFailure, List<TrendMedia>>> getPopularMovies() async {
     final result = await _http.request(
       '/movie/popular',
       queryParameters: {
@@ -16,12 +18,17 @@ class PopularService {
         'page': '1',
       },
       onSuccess: (json) {
-        final list = json['result'] as List<Json>;
-        final List<TrendMedia> trendMedia = list.map((item) => TrendMedia.fromJson(item)).toList();
+        final list = List<Json>.from(json['results']);
+        final List<TrendMedia> trendMedia = list
+          .where((media) => media['title'] != null)
+          .map((item) => TrendMedia.fromJson(item)).toList();
         return trendMedia;
       }
     );
 
-    return result;
+    return result.when(
+      error: handleHttpFailure,
+      success: (media) => Either.success(value: media),
+    );
   }
 }

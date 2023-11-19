@@ -8,4 +8,5 @@ class SignInFailure with _$SignInFailure {
   factory SignInFailure.network() = _Network;
   factory SignInFailure.unauthorized() = _Unauthorized;
   factory SignInFailure.unknown() = _Unknown;
+  factory SignInFailure.notVerified() = _NotVerified;
 }

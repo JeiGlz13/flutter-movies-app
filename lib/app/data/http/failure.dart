@@ -4,5 +4,7 @@ class HttpFailure {
   final int? statusCode;
   final Object? exception;
 
-  HttpFailure({this.statusCode, this.exception});
+  final Object? data;
+
+  HttpFailure({this.statusCode, this.exception, this.data});
 }

@@ -43,6 +43,7 @@ Future<void> _submit(BuildContext context) async {
         network: () => 'Network error',
         unauthorized: () => 'Unauthorized',
         unknown: () => 'Unknown',
+        notVerified: () => 'Email not verified',
       );
 
       ScaffoldMessenger.of(context).showSnackBar(
