@@ -1,0 +1,3 @@
+enum TrendType {
+  movie, tv,
+}

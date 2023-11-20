@@ -8,13 +8,15 @@ part 'trend_media.g.dart';
 class TrendMedia with _$TrendMedia {
   factory TrendMedia({
     required int id,
-    required String title,
     required String overview,
 
-    @JsonKey(name: 'original_title')
+    @JsonKey(readValue: readTitleValue)
+    required String title,
+    @JsonKey(readValue: readOriginalTitleValue)
     required String originalTitle,
-    @JsonKey(name: 'release_date')
+    @JsonKey(readValue: readReleaseDateValue)
     required String releaseDate,
+
     @JsonKey(name: 'poster_path')
     required String posterPath,
     @JsonKey(name: 'backdrop_path')
@@ -26,4 +28,21 @@ class TrendMedia with _$TrendMedia {
   }) = _Media;
 
   factory TrendMedia.fromJson(Json json) => _$TrendMediaFromJson(json);
+}
+
+Object? readTitleValue(Map map, String _) {
+  return map['title'] ?? map['name'];
+}
+Object? readOriginalTitleValue(Map map, String _) {
+  return map['original_title'] ?? map['original_name'];
+}
+Object? readReleaseDateValue(Map map, String _) {
+  return map['release_date'] ?? map['first_air_date'];
+}
+
+List<TrendMedia> getMediaListFromJson(List list) {
+  return list
+    .where((element) => element['poster_path'] != null)
+    .map((element) => TrendMedia.fromJson(element))
+    .toList();
 }

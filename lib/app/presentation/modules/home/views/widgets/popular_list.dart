@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/app/domain/either.dart';
 import 'package:movies_app/app/domain/enums/fails/http_request/http_request_failure.dart';
+import 'package:movies_app/app/domain/enums/trend_type.dart';
 import 'package:movies_app/app/domain/models/trend_media/trend_media.dart';
 import 'package:movies_app/app/domain/repositories/popular_repository.dart';
 import 'package:movies_app/app/presentation/modules/home/views/widgets/popular_tile.dart';
+import 'package:movies_app/app/presentation/modules/home/views/widgets/popular_type.dart';
 
 import 'package:provider/provider.dart';
 
@@ -15,26 +17,32 @@ class PopularList extends StatefulWidget {
 }
 
 class _PopularListState extends State<PopularList> {
-  late final Future<Either<HttpRequestFailure, List<TrendMedia>>> _future;
+  late Future<Either<HttpRequestFailure, List<TrendMedia>>> _future;
+  TrendType _type = TrendType.movie;
+
+  PopularRepository get _popularRepository => context.read();
 
   @override
   void initState() {
     super.initState();
-    final PopularRepository popularRepository = context.read();
-    _future = popularRepository.getMoviesAndSeries();
+    _future = _popularRepository.getPopularMoviesOrSeries(_type);
   }
+
   @override
   Widget build(BuildContext context) {
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 15, top: 15),
-          child: Text(
-            'Trending movies',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+        PopularType(
+          type: _type,
+          onChange: (value) {
+            setState(() {
+              _type = value;
+              _future = _popularRepository.getPopularMoviesOrSeries(_type);
+            });
+          },
         ),
         const SizedBox(height: 10),
         AspectRatio(
@@ -44,6 +52,7 @@ class _PopularListState extends State<PopularList> {
               final width = constraints.maxHeight * 0.75;
               return Center(
                 child: FutureBuilder<Either<HttpRequestFailure, List<TrendMedia>>>(
+                  key: ValueKey(_future),
                   future: _future,
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
@@ -54,7 +63,7 @@ class _PopularListState extends State<PopularList> {
                       success: (list) {
                         return ListView.separated(
                           separatorBuilder: (context, index) {
-                            return SizedBox(width: 10);
+                            return const SizedBox(width: 10);
                           },
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           scrollDirection: Axis.horizontal,

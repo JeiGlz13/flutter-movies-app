@@ -9,6 +9,7 @@ class PopularTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(movie);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: SizedBox(
@@ -22,12 +23,26 @@ class PopularTile extends StatelessWidget {
               ),
             ),
             Positioned(
-              right: 5,
-              top: 5,
-              child: Chip(
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                elevation: 1,
-                label: Text(movie.voteAverage.toStringAsFixed(1)),
+              right: 3,
+              top: 3,
+              child: Opacity(
+                opacity: 0.75,
+                child: Chip(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  labelPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  label: Row(
+                    children: [
+                      Text(
+                        movie.voteAverage.toStringAsFixed(1),
+                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(Icons.star, color: Colors.amber[600], size: 18)
+                    ],
+                  ),
+                ),
               ),
             ),
           ],
