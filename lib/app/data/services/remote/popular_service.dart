@@ -42,6 +42,7 @@ class PopularService {
         final List<People> trendPeople = list
           .where((element) => element['profile_path'] != null)
           .map((element) => People.fromJson(element))
+          .take(10)
           .toList();
         return trendPeople;
       }

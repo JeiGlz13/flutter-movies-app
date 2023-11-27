@@ -4,8 +4,8 @@ import 'package:movies_app/app/domain/enums/fails/http_request/http_request_fail
 import 'package:movies_app/app/domain/enums/trend_type.dart';
 import 'package:movies_app/app/domain/models/trend_media/trend_media.dart';
 import 'package:movies_app/app/domain/repositories/popular_repository.dart';
-import 'package:movies_app/app/presentation/modules/home/views/widgets/popular_tile.dart';
-import 'package:movies_app/app/presentation/modules/home/views/widgets/popular_type.dart';
+import 'package:movies_app/app/presentation/modules/home/views/widgets/movies_series/popular_tile.dart';
+import 'package:movies_app/app/presentation/modules/home/views/widgets/movies_series/popular_type.dart';
 
 import 'package:provider/provider.dart';
 

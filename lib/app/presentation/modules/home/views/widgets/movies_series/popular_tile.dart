@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:movies_app/app/domain/models/trend_media/trend_media.dart';
 import 'package:movies_app/app/presentation/global/utils/get_image_url.dart';
 
 class PopularTile extends StatelessWidget {
   final TrendMedia movie;
   final double width;
-  const PopularTile({super.key, required this.movie, required this.width});
+  final bool showData;
+  const PopularTile({
+    super.key, required this.movie, required this.width, this.showData = true,
+  });
 
   @override
   Widget build(BuildContext context) {
-    print(movie);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: SizedBox(
@@ -17,11 +20,21 @@ class PopularTile extends StatelessWidget {
         child: Stack(
           children: [
             Positioned.fill(
-              child: Image.network(
+              child: ExtendedImage.network(
                 getImageUrl(movie.posterPath),
                 fit: BoxFit.cover,
+                loadStateChanged: (state) {
+                  if (state.extendedImageLoadState == LoadState.loading) {
+                    return Container(
+                      color: Colors.black12,
+                    );
+                  }
+
+                  return state.completedWidget;
+                },
               ),
             ),
+            if(showData)
             Positioned(
               right: 3,
               top: 3,
