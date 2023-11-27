@@ -5,6 +5,7 @@ import 'package:movies_app/app/domain/enums/fails/http_request/http_request_fail
 import 'package:movies_app/app/domain/models/people/people.dart';
 import 'package:movies_app/app/domain/repositories/popular_repository.dart';
 import 'package:movies_app/app/presentation/global/utils/get_image_url.dart';
+import 'package:movies_app/app/presentation/global/widgets/request_failed.dart';
 import 'package:movies_app/app/presentation/modules/home/views/widgets/people/person_tile.dart';
 import 'package:provider/provider.dart';
 
@@ -38,6 +39,7 @@ class _PopularPeopleState extends State<PopularPeople> {
     final width = MediaQuery.of(context).size.width;
     return Expanded(
       child: FutureBuilder<EitherListPeople>(
+        key: ValueKey(_future),
         future: _future,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -47,7 +49,13 @@ class _PopularPeopleState extends State<PopularPeople> {
           }
     
           return snapshot.data!.when(
-            error: (value) => const Text('Error'),
+            error: (value) => RequestFailed(
+              onRetry: () {
+                setState(() {
+                 _future = context.read<PopularRepository>().getPopularPeople();
+                });
+              }, 
+            ),
             success: (people) => Stack(
               alignment: Alignment.bottomCenter,
               children: [

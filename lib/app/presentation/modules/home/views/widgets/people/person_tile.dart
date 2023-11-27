@@ -4,15 +4,21 @@ import 'package:movies_app/app/domain/models/people/people.dart';
 import 'package:movies_app/app/presentation/global/utils/get_image_url.dart';
 import 'package:movies_app/app/presentation/modules/home/views/widgets/movies_series/popular_tile.dart';
 
-class PersonTile extends StatelessWidget {
+class PersonTile extends StatefulWidget {
   final People person;
   final double width;
   const PersonTile({super.key, required this.person, required this.width});
 
   @override
+  State<PersonTile> createState() => _PersonTileState();
+}
+
+class _PersonTileState extends State<PersonTile> {
+  bool showKnownFor = false;
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: width,
+      width: widget.width,
       child: Padding(
         padding: const EdgeInsets.all(15.0),
         child: ClipRRect(
@@ -21,7 +27,7 @@ class PersonTile extends StatelessWidget {
             children: [
               Positioned.fill(
                 child: ExtendedImage.network(
-                  getImageUrl(person.profilePath),
+                  getImageUrl(widget.person.profilePath),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -37,46 +43,65 @@ class PersonTile extends StatelessWidget {
                       begin: Alignment.topCenter,
                       colors: [
                         Colors.transparent,
-                        Colors.black54,
+                        Colors.black12,
+                        Colors.black38,
                         Colors.black,
                       ],
                     ),
                   ),
                   child: Column(
                     children: [
-                      Text(
-                        person.name,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            widget.person.name,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              setState(() {
+                                showKnownFor = !showKnownFor;
+                              });
+                            },
+                            icon: Icon(
+                              showKnownFor
+                                ? Icons.keyboard_arrow_down
+                                : Icons.keyboard_arrow_up,
+                              color: Colors.white,
+                            ),
+                          )
+                        ],
                       ),
                       const SizedBox(height: 10),
-                      if(person.name != person.originalName)
+                      if(widget.person.name != widget.person.originalName)
                         Text(
-                          person.originalName,
+                          widget.person.originalName,
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
                         ),
-                      if(person.knownFor.isNotEmpty)
+                      if(widget.person.knownFor.isNotEmpty && showKnownFor)
                         SizedBox(
-                          height: 130,
+                          height: 180,
                           child: ListView.separated(
-                            separatorBuilder: (context, index) => SizedBox(width: 10),
+                            separatorBuilder: (context, index) => const SizedBox(width: 15),
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, index) {
-                              final media = person.knownFor[index];
+                              final media = widget.person.knownFor[index];
                               return PopularTile(
                                 movie: media,
-                                width: 130 * 0.75,
+                                width: 180 * 0.75,
                                 showData: false,
                               );
                             },
-                            itemCount: person.knownFor.length,
+                            itemCount: widget.person.knownFor.length,
                           ),
                         )
                     ],
