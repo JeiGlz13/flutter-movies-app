@@ -1,7 +1,9 @@
+import 'package:movies_app/app/domain/enums/trend_type.dart';
 import 'package:movies_app/app/domain/repositories/popular_repository.dart';
 import 'package:movies_app/app/presentation/global/state_notifier.dart';
+import 'package:movies_app/app/presentation/modules/home/controllers/state/home_state.dart';
 
-class HomeController extends StateNotifier {
+class HomeController extends StateNotifier<HomeState> {
   final PopularRepository popularRepository;
   HomeController(
     super.state,
@@ -9,21 +11,55 @@ class HomeController extends StateNotifier {
   );
 
   Future<void> init() async {
-    final result = await popularRepository.getPopularMoviesOrSeries(
-      state.type,
-    );
+    await loadMovies();
+    await loadPeople();
+  }
 
-    result.when(
+  void onTypeChanged(TrendType type) {
+    if (type != state.moviesState.type) {
+      state = state.copyWith(
+        moviesState: state.moviesState.copyWith(type: type)
+      );
+
+      loadMovies();
+    }
+  }
+
+  Future<void> loadPeople({ PeopleState? peopleState }) async {
+    if (peopleState != null) {
+      state = state.copyWith(peopleState: peopleState);
+    }
+    final peopleResult = await popularRepository.getPopularPeople();
+    peopleResult.when(
       error: (value) {
         state = state.copyWith(
-          isLoading: false,
-          moviesAndSeries: null,
-        ); 
+          peopleState: const PeopleState.failed(),
+        );
       },
-      success: (movies) {
+      success: (value) {
         state = state.copyWith(
-          isLoading: false,
-          moviesAndSeries: movies,
+          peopleState: PeopleState.loaded(people: value),
+        );
+      },
+    );
+  }
+
+  Future<void> loadMovies({ MoviesState? moviesState }) async {
+    if (moviesState != null) {
+      state = state.copyWith(moviesState: moviesState);
+    }
+    final moviesResult = await popularRepository.getPopularMoviesOrSeries(
+      state.moviesState.type,
+    );
+    moviesResult.when(
+      error: (value) {
+        state = state.copyWith(
+          moviesState: MoviesState.failed(state.moviesState.type),
+        );
+      },
+      success: (value) {
+        state = state.copyWith(
+          moviesState: MoviesState.loaded(moviesAndSeries: value, type: state.moviesState.type),
         );
       },
     );

@@ -6,10 +6,10 @@ import 'package:movies_app/app/domain/models/people/people.dart';
 import 'package:movies_app/app/domain/repositories/popular_repository.dart';
 import 'package:movies_app/app/presentation/global/utils/get_image_url.dart';
 import 'package:movies_app/app/presentation/global/widgets/request_failed.dart';
+import 'package:movies_app/app/presentation/modules/home/controllers/home_controller.dart';
+import 'package:movies_app/app/presentation/modules/home/controllers/state/home_state.dart';
 import 'package:movies_app/app/presentation/modules/home/views/widgets/people/person_tile.dart';
 import 'package:provider/provider.dart';
-
-typedef EitherListPeople = Either<HttpRequestFailure, List<People>>;
 
 class PopularPeople extends StatefulWidget {
   const PopularPeople({super.key});
@@ -19,15 +19,7 @@ class PopularPeople extends StatefulWidget {
 }
 
 class _PopularPeopleState extends State<PopularPeople> {
-  late Future<EitherListPeople> _future;
-  late final PageController _pageController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController(viewportFraction: 0.8);
-    _future = context.read<PopularRepository>().getPopularPeople();
-  }
+  final PageController _pageController = PageController(viewportFraction: 0.8);
 
   @override
   void dispose() {
@@ -36,27 +28,22 @@ class _PopularPeopleState extends State<PopularPeople> {
   }
   @override
   Widget build(BuildContext context) {
+    final HomeController homeController = context.watch();
+    final PeopleState state = homeController.state.peopleState;
     final width = MediaQuery.of(context).size.width;
     return Expanded(
-      child: FutureBuilder<EitherListPeople>(
-        key: ValueKey(_future),
-        future: _future,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-              child: CircularProgressIndicator(),
+      child: state.when(
+        loading: () => const Center(
+          child: CircularProgressIndicator(),
+        ),
+        failed: () => RequestFailed(
+          onRetry: () {
+            homeController.loadPeople(
+              peopleState: const PeopleState.loading(),
             );
-          }
-    
-          return snapshot.data!.when(
-            error: (value) => RequestFailed(
-              onRetry: () {
-                setState(() {
-                 _future = context.read<PopularRepository>().getPopularPeople();
-                });
-              }, 
-            ),
-            success: (people) => Stack(
+          },
+        ),
+        loaded: (people) => Stack(
               alignment: Alignment.bottomCenter,
               children: [
                 PageView.builder(
@@ -90,9 +77,7 @@ class _PopularPeopleState extends State<PopularPeople> {
                 const SizedBox(height: 10),
               ],
             ),
-          );
-        },
-      ),
+      )
     );
   }
 }
