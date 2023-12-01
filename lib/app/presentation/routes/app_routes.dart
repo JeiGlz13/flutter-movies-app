@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/app/presentation/modules/home/views/home_view.dart';
+import 'package:movies_app/app/presentation/modules/movie/views/movie_view.dart';
 import 'package:movies_app/app/presentation/modules/sign_in/views/sign_in_view.dart';
 import 'package:movies_app/app/presentation/modules/splash/views/splash_view.dart';
 import 'package:movies_app/app/presentation/routes/routes.dart';

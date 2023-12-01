@@ -30,17 +30,13 @@ class HomeController extends StateNotifier<HomeState> {
       state = state.copyWith(peopleState: peopleState);
     }
     final peopleResult = await popularRepository.getPopularPeople();
-    peopleResult.when(
-      error: (value) {
-        state = state.copyWith(
-          peopleState: const PeopleState.failed(),
-        );
-      },
-      success: (value) {
-        state = state.copyWith(
-          peopleState: PeopleState.loaded(people: value),
-        );
-      },
+    state = peopleResult.when(
+      error: (value) => state.copyWith(
+        peopleState: const PeopleState.failed(),
+      ),
+      success: (value) => state.copyWith(
+        peopleState: PeopleState.loaded(people: value),
+      ),
     );
   }
 
@@ -51,17 +47,13 @@ class HomeController extends StateNotifier<HomeState> {
     final moviesResult = await popularRepository.getPopularMoviesOrSeries(
       state.moviesState.type,
     );
-    moviesResult.when(
-      error: (value) {
-        state = state.copyWith(
-          moviesState: MoviesState.failed(state.moviesState.type),
-        );
-      },
-      success: (value) {
-        state = state.copyWith(
-          moviesState: MoviesState.loaded(moviesAndSeries: value, type: state.moviesState.type),
-        );
-      },
+    state = moviesResult.when(
+      error: (value) => state.copyWith(
+        moviesState: MoviesState.failed(state.moviesState.type),
+      ),
+      success: (value) => state.copyWith(
+        moviesState: MoviesState.loaded(moviesAndSeries: value, type: state.moviesState.type),
+      ),
     );
   }
 }

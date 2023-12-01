@@ -45,7 +45,7 @@ class PopularList extends StatelessWidget {
                     itemCount: moviesAndSeries.length,
                     itemBuilder: (context, index) {
                       final movie = moviesAndSeries[index];
-                      return PopularTile(movie: movie, width: width);
+                      return PopularTile(movie: movie, width: width, type: state.type);
                     },
                   ),
                 )

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:url_strategy/url_strategy.dart';
 import 'package:movies_app/app/data/repositories_implementation/account_repository_impl.dart';
+import 'package:movies_app/app/data/repositories_implementation/movies_repository_impl.dart';
 import 'package:movies_app/app/data/repositories_implementation/popular_repository_impl.dart';
 import 'package:movies_app/app/data/services/local/session_service.dart';
 import 'package:movies_app/app/data/services/remote/account_service.dart';
+import 'package:movies_app/app/data/services/remote/movies_service.dart';
 import 'package:movies_app/app/data/services/remote/popular_service.dart';
 import 'package:movies_app/app/domain/repositories/account_repository.dart';
+import 'package:movies_app/app/domain/repositories/movies_repository.dart';
 import 'package:movies_app/app/domain/repositories/popular_repository.dart';
 import 'package:movies_app/app/presentation/global/controllers/session_controller.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +25,7 @@ import 'package:movies_app/app/domain/repositories/connectivity_repository.dart'
 import 'package:movies_app/app/my_app.dart';
 
 void main() {
+  setPathUrlStrategy();
   final SessionService sessionService = SessionService(const FlutterSecureStorage());
   final Http http = Http(
     Client(),
@@ -53,6 +58,11 @@ void main() {
         Provider<PopularRepository>(
           create: (_) => PopularRepositoryImpl(
             PopularService(http),
+          ),
+        ),
+        Provider<MoviesRepository>(
+          create: (_) => MoviesRepositoryImpl(
+            moviesService: MoviesService(http: http),
           ),
         ),
         ChangeNotifierProvider<SessionController>(
