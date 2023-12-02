@@ -15,6 +15,7 @@ class PersonTile extends StatefulWidget {
 
 class _PersonTileState extends State<PersonTile> {
   bool showKnownFor = false;
+  final double maxHeight = 180;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -35,76 +36,73 @@ class _PersonTileState extends State<PersonTile> {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                child: Container(
-                  padding: const EdgeInsets.all(20).copyWith(bottom: 40),
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      end: Alignment.bottomCenter,
-                      begin: Alignment.topCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black12,
-                        Colors.black38,
-                        Colors.black,
-                      ],
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            widget.person.name,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                showKnownFor = !showKnownFor;
-                              });
-                            },
-                            icon: Icon(
-                              showKnownFor
-                                ? Icons.keyboard_arrow_down
-                                : Icons.keyboard_arrow_up,
-                              color: Colors.white,
-                            ),
-                          )
+                child: GestureDetector(
+                  onVerticalDragUpdate: (details) {
+                    if (details.delta.dy < -1) {
+                      setState(() {
+                        showKnownFor = true;
+                      });
+                    }
+                    if (details.delta.dy > 1) {
+                      setState(() {
+                        showKnownFor = false;
+                      });
+                    }
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20).copyWith(bottom: 40),
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        end: Alignment.bottomCenter,
+                        begin: Alignment.topCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black12,
+                          Colors.black38,
+                          Colors.black,
                         ],
                       ),
-                      const SizedBox(height: 10),
-                      if(widget.person.name != widget.person.originalName)
+                    ),
+                    child: Column(
+                      children: [
                         Text(
-                          widget.person.originalName,
+                          widget.person.name,
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
                         ),
-                      if(widget.person.knownFor.isNotEmpty && showKnownFor)
-                        SizedBox(
-                          height: 180,
-                          child: ListView.separated(
-                            separatorBuilder: (context, index) => const SizedBox(width: 15),
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              final media = widget.person.knownFor[index];
-                              return PopularTile(
-                                movie: media,
-                                width: 180 * 0.75,
-                                showData: false,
-                              );
-                            },
-                            itemCount: widget.person.knownFor.length,
+                        const SizedBox(height: 10),
+                        if(widget.person.name != widget.person.originalName)
+                          Text(
+                            widget.person.originalName,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
                           ),
-                        )
-                    ],
+                        if(widget.person.knownFor.isNotEmpty && showKnownFor)
+                          SizedBox(
+                            height: maxHeight,
+                            child: ListView.separated(
+                              separatorBuilder: (context, index) => const SizedBox(width: 15),
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                final media = widget.person.knownFor[index];
+                                return PopularTile(
+                                  movie: media,
+                                  width: maxHeight * 0.75,
+                                  showData: false,
+                                );
+                              },
+                              itemCount: widget.person.knownFor.length,
+                            ),
+                          )
+                      ],
+                    ),
                   ),
                 ),
               )

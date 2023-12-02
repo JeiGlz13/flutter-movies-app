@@ -3,6 +3,7 @@ import 'package:movies_app/app/domain/repositories/movies_repository.dart';
 import 'package:movies_app/app/presentation/global/widgets/request_failed.dart';
 import 'package:movies_app/app/presentation/modules/movie/controller/movie_controller.dart';
 import 'package:movies_app/app/presentation/modules/movie/controller/state/movie_state.dart';
+import 'package:movies_app/app/presentation/modules/movie/views/widgets/movie_app_bar.dart';
 import 'package:movies_app/app/presentation/modules/movie/views/widgets/movie_content.dart';
 import 'package:provider/provider.dart';
 
@@ -21,22 +22,7 @@ class MovieView extends StatelessWidget {
       builder: (context, child) {
         final MovieController movieController = context.watch();
         return Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            foregroundColor: Colors.white,
-            actions: movieController.state.map(
-              loading: (value) => null,
-              failed: (value) => null,
-              loaded: (value) => [
-                IconButton(
-                  onPressed: () {
-                    
-                  },
-                  icon: Icon(Icons.favorite_outline),
-                )
-              ],
-            ),
-          ),
+          appBar: const MovieAppBar(),
           extendBodyBehindAppBar: true,
           body: movieController.state.map(
             loading: (_) => const Center(
