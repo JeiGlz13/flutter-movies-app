@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/app/domain/models/movie/movie.dart';
 import 'package:movies_app/app/generated/assets.gen.dart';
-import 'package:movies_app/app/presentation/modules/home/views/home_view.dart';
-import 'package:movies_app/app/presentation/modules/movie/views/movie_view.dart';
 import 'package:movies_app/app/presentation/routes/app_routes.dart';
 import 'package:movies_app/app/presentation/routes/routes.dart';
 

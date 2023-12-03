@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:movies_app/app/presentation/global/controllers/favorites/favorites_controller.dart';
+import 'package:movies_app/app/presentation/global/controllers/favorites/state/favorites_state.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'package:movies_app/app/data/repositories_implementation/account_repository_impl.dart';
 import 'package:movies_app/app/data/repositories_implementation/movies_repository_impl.dart';
@@ -32,7 +34,7 @@ void main() {
     baseUrl: 'https://api.themoviedb.org/3',
     token: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1YzgxYjcwZDE0MGU5Njk3ZWRiOGRmZjQxMDgzMzBiMCIsInN1YiI6IjY1MzMxMGJlMzk1NDlhMDEwYjYxMjFiZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.A2RnzvaACHYKavd_8sJE6M0BPJv5PqkzZLk398cJbgs',
   );
-  final accountService = AccountService(http);
+  final accountService = AccountService(http, sessionService);
 
   runApp(
     MultiProvider(
@@ -68,6 +70,12 @@ void main() {
         ChangeNotifierProvider<SessionController>(
           create: (context) => SessionController(
             authenticationRepository: context.read<AuthenticationRepository>(),
+          ),
+        ),
+        ChangeNotifierProvider<FavoritesController>(
+          create: (context) => FavoritesController(
+            FavoritesState.loading(),
+            accountService: accountService,
           ),
         ),
       ],

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/app/domain/enums/fails/sign_in/sign_in_failure.dart';
+import 'package:movies_app/app/presentation/global/controllers/favorites/favorites_controller.dart';
 import 'package:movies_app/app/presentation/global/controllers/session_controller.dart';
 import 'package:movies_app/app/presentation/modules/sign_in/controller/sign_in_controller.dart';
 import 'package:movies_app/app/presentation/routes/routes.dart';
@@ -53,7 +53,10 @@ Future<void> _submit(BuildContext context) async {
     },
     success: (user) {
       final SessionController sessionController = context.read();
+      final FavoritesController favoritesController = context.read();
+
       sessionController.setUser(user);
+      favoritesController.init();
       Navigator.pushReplacementNamed(context, Routes.home);
     },
   );

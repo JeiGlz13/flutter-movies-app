@@ -1,7 +1,5 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:movies_app/app/domain/models/movie/movie.dart';
-import 'package:movies_app/app/presentation/global/utils/get_image_url.dart';
 import 'package:movies_app/app/presentation/modules/movie/controller/state/movie_state.dart';
 import 'package:movies_app/app/presentation/modules/movie/views/widgets/movie_cast.dart';
 import 'package:movies_app/app/presentation/modules/movie/views/widgets/movie_header.dart';

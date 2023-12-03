@@ -1,10 +1,4 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:movies_app/app/domain/either.dart';
-import 'package:movies_app/app/domain/enums/fails/http_request/http_request_failure.dart';
-import 'package:movies_app/app/domain/models/people/people.dart';
-import 'package:movies_app/app/domain/repositories/popular_repository.dart';
-import 'package:movies_app/app/presentation/global/utils/get_image_url.dart';
 import 'package:movies_app/app/presentation/global/widgets/request_failed.dart';
 import 'package:movies_app/app/presentation/modules/home/controllers/home_controller.dart';
 import 'package:movies_app/app/presentation/modules/home/controllers/state/home_state.dart';

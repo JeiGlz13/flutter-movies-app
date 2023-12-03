@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/app/domain/enums/trend_type.dart';
-import 'package:movies_app/app/domain/repositories/authentication_repository.dart';
 import 'package:movies_app/app/domain/repositories/popular_repository.dart';
-import 'package:movies_app/app/presentation/global/controllers/session_controller.dart';
 import 'package:movies_app/app/presentation/modules/home/controllers/home_controller.dart';
 import 'package:movies_app/app/presentation/modules/home/controllers/state/home_state.dart';
 import 'package:movies_app/app/presentation/modules/home/views/widgets/movies_series/popular_list.dart';
@@ -30,6 +28,29 @@ class _HomeViewState extends State<HomeView> {
         return controller;
       },
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 2,
+          shadowColor: Colors.black45,
+          actions: [
+            IconButton(
+              onPressed: () => Navigator.pushNamed(context, Routes.favorite),
+              icon: const Icon(
+                Icons.favorite,
+                color: Colors.black87
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                
+              },
+              icon: const Icon(
+                Icons.person,
+                color: Colors.black87
+              ),
+            ),
+          ],
+        ),
         body: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {

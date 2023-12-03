@@ -1,4 +1,3 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:movies_app/app/data/services/local/session_service.dart';
 import 'package:movies_app/app/data/services/remote/account_service.dart';
 import 'package:movies_app/app/data/services/remote/authentication_service.dart';
@@ -67,7 +66,7 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
   
   @override
   Future<void> signOut() async {
-    return await _sessionService.deleteSessionId();
+    return await _sessionService.signOut();
   }
 
 }

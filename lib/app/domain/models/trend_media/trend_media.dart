@@ -20,7 +20,7 @@ class TrendMedia with _$TrendMedia {
     @JsonKey(name: 'poster_path')
     required String posterPath,
     @JsonKey(name: 'backdrop_path')
-    required String backdropPath,
+    required String? backdropPath,
     @JsonKey(name: 'vote_average')
     required double voteAverage,
     @JsonKey(name: 'vote_count')
