@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/app/presentation/global/controllers/favorites/favorites_controller.dart';
 import 'package:movies_app/app/presentation/modules/movie/controller/movie_controller.dart';
-import 'package:movies_app/app/presentation/modules/movie/controller/state/movie_state.dart';
 import 'package:provider/provider.dart';
 
 class MovieAppBar extends StatelessWidget implements PreferredSizeWidget {

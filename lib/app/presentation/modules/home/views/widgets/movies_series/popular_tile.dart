@@ -3,7 +3,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:movies_app/app/domain/enums/trend_type.dart';
 import 'package:movies_app/app/domain/models/trend_media/trend_media.dart';
 import 'package:movies_app/app/presentation/global/utils/get_image_url.dart';
-import 'package:movies_app/app/presentation/modules/movie/views/movie_view.dart';
+import 'package:movies_app/app/presentation/global/utils/go_to_media_details.dart';
 
 class PopularTile extends StatelessWidget {
   final TrendMedia movie;
@@ -17,17 +17,7 @@ class PopularTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        if (type == TrendType.movie) {
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MovieView(movieId: movie.id),
-            ),
-          );
-        }
-      },
+      onTap: () => goToMediaDetails(context, movie.id, type),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: SizedBox(

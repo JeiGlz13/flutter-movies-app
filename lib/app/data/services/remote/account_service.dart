@@ -37,6 +37,7 @@ class AccountService {
     final result = await _http.request(
       '/account/$accountId/favorite/$typeName',
       queryParameters: {
+        'language': 'es-ES',
         'session_id': sessionId,
       },
       onSuccess: (json) {
@@ -50,6 +51,33 @@ class AccountService {
         map.addEntries(iterable);
         return map;
       },
+    );
+
+    return result.when(
+      error: handleHttpFailure,
+      success: (value) => Either.success(value: value),
+    );
+  }
+
+  Future<Either<HttpRequestFailure, void>> markAsFavorite({
+    required int mediaId,
+    required TrendType type,
+    required bool isFavorite,
+  }) async {
+    final accountId = await _sessionService.accountId ?? '';
+    final sessionId = await _sessionService.sessionId ?? '';
+    final result = await _http.request(
+      '/account/$accountId/favorite',
+      method: HttpMethod.post,
+      queryParameters: {
+        'session_id': sessionId,
+      },
+      body: {
+        'media_type': type.name,
+        'media_id': mediaId,
+        'favorite': isFavorite,
+      },
+      onSuccess: (responseBody) => null,
     );
 
     return result.when(

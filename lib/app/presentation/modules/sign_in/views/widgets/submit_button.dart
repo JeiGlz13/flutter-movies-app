@@ -51,13 +51,6 @@ Future<void> _submit(BuildContext context) async {
       );
       return message;
     },
-    success: (user) {
-      final SessionController sessionController = context.read();
-      final FavoritesController favoritesController = context.read();
-
-      sessionController.setUser(user);
-      favoritesController.init();
-      Navigator.pushReplacementNamed(context, Routes.home);
-    },
+    success: (user) => Navigator.pushReplacementNamed(context, Routes.home),
   );
 }

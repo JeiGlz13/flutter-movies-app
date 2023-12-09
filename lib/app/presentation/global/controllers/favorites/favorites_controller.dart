@@ -1,5 +1,7 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:movies_app/app/data/services/remote/account_service.dart';
 import 'package:movies_app/app/domain/enums/trend_type.dart';
+import 'package:movies_app/app/domain/models/trend_media/trend_media.dart';
 import 'package:movies_app/app/presentation/global/controllers/favorites/state/favorites_state.dart';
 import 'package:movies_app/app/presentation/global/state_notifier.dart';
 
@@ -8,6 +10,7 @@ class FavoritesController extends StateNotifier<FavoritesState> {
   FavoritesController(super.state, { required this.accountService });
 
   Future<void> init() async {
+    state = FavoritesState.loading();
     final moviesResult = await accountService.getFavorites(TrendType.movie);
 
     state = await moviesResult.when(
@@ -20,6 +23,38 @@ class FavoritesController extends StateNotifier<FavoritesState> {
             movies: movies,
             series: series,
           ),
+        );
+      },
+    );
+  }
+
+  markAsFavorite(TrendMedia media, TrendType type) async {
+    state.mapOrNull(
+      loaded: (loadedState) async {
+        final isMovie = (type == TrendType.movie);
+        final map = isMovie
+          ? { ...loadedState.movies }
+          : { ...loadedState.series };
+
+        final isFavorite = !(map.keys.contains(media.id));
+        final result = await accountService.markAsFavorite(
+          mediaId: media.id,
+          type: type,
+          isFavorite: isFavorite,
+        );
+
+        result.whenOrNull(
+          success: (value) {
+            if (isFavorite) {
+              map[media.id] = media;          
+            } else {
+              map.remove(media.id);
+            }
+
+            state = isMovie
+              ? loadedState.copyWith(movies: map)
+              : loadedState.copyWith(series: map);
+          },
         );
       },
     );

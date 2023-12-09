@@ -30,4 +30,11 @@ class AccountRepositoryImpl implements AccountRepository {
   Future<Either<HttpRequestFailure, Map<int, TrendMedia>>> getFavorites(TrendType type) {
     return _accountService.getFavorites(type);
   }
+  
+  @override
+  Future<Either<HttpRequestFailure, void>> markAsFavorite({
+    required int mediaId, required TrendType type, required bool isFavorite,
+  }) {
+    return _accountService.markAsFavorite(mediaId: mediaId, type: type, isFavorite: isFavorite);
+  }
 }
