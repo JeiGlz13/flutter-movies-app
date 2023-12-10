@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/app/generated/assets.gen.dart';
+import 'package:movies_app/app/presentation/global/controllers/theme_controller.dart';
+import 'package:movies_app/app/presentation/global/theme.dart';
 import 'package:movies_app/app/presentation/routes/app_routes.dart';
 import 'package:movies_app/app/presentation/routes/routes.dart';
+import 'package:provider/provider.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final ThemeController themeController = context.watch();
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
       },
       child: MaterialApp(
         title: 'Movies App',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-          useMaterial3: true,
-        ),
+        theme: getTheme(themeController.isDarkMode),
         // onGenerateRoute: (settings) {
         //   try {
         //     final uri = Uri.parse(settings.name ?? '');

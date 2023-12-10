@@ -82,7 +82,7 @@ class AccountService {
 
     return result.when(
       error: handleHttpFailure,
-      success: (value) => Either.success(value: value),
+      success: (value) => Either.success(value: null),
     );
   }
 }

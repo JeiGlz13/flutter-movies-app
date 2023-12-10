@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:movies_app/app/presentation/global/controllers/favorites/favorites_controller.dart';
 import 'package:movies_app/app/presentation/global/controllers/favorites/state/favorites_state.dart';
+import 'package:movies_app/app/presentation/global/controllers/theme_controller.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'package:movies_app/app/data/repositories_implementation/account_repository_impl.dart';
 import 'package:movies_app/app/data/repositories_implementation/movies_repository_impl.dart';
@@ -66,6 +67,9 @@ void main() {
           create: (_) => MoviesRepositoryImpl(
             moviesService: MoviesService(http: http),
           ),
+        ),
+        ChangeNotifierProvider<ThemeController>(
+          create: (context) => ThemeController(false),
         ),
         ChangeNotifierProvider<SessionController>(
           create: (context) => SessionController(

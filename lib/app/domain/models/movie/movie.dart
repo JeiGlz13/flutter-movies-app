@@ -8,6 +8,7 @@ part 'movie.g.dart';
 
 @freezed
 class Movie with _$Movie {
+  const Movie._();
 
   factory Movie({
     required int id,
@@ -29,8 +30,22 @@ class Movie with _$Movie {
     @JsonKey(name: 'vote_average')
     required double voteAverage,
     @JsonKey(name: 'vote_count')
-    required double voteCount,
+    required int voteCount,
   }) = _Movie;
 
   factory Movie.fromJson(Json json) => _$MovieFromJson(json);
+
+  TrendMedia toMedia() {
+    return TrendMedia(
+      id: id,
+      overview: overview,
+      title: title,
+      originalTitle: originalTitle,
+      releaseDate: releaseDate,
+      posterPath: posterPath,
+      backdropPath: backdropPath,
+      voteAverage: voteAverage,
+      voteCount: voteCount,
+    );
+  }
 }

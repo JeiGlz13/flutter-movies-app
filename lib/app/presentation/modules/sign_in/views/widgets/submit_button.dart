@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/app/presentation/global/controllers/favorites/favorites_controller.dart';
-import 'package:movies_app/app/presentation/global/controllers/session_controller.dart';
 import 'package:movies_app/app/presentation/modules/sign_in/controller/sign_in_controller.dart';
 import 'package:movies_app/app/presentation/routes/routes.dart';
 import 'package:provider/provider.dart';

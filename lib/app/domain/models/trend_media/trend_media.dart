@@ -15,7 +15,7 @@ class TrendMedia with _$TrendMedia {
     @JsonKey(readValue: readOriginalTitleValue)
     required String originalTitle,
     @JsonKey(readValue: readReleaseDateValue)
-    required String releaseDate,
+    required DateTime? releaseDate,
 
     @JsonKey(name: 'poster_path')
     required String posterPath,
@@ -37,7 +37,8 @@ Object? readOriginalTitleValue(Map map, String _) {
   return map['original_title'] ?? map['original_name'];
 }
 Object? readReleaseDateValue(Map map, String _) {
-  return map['release_date'] ?? map['first_air_date'];
+  final releaseDate = map['release_date'] ?? map['first_air_date'];
+  return releaseDate == '' ? null : releaseDate;
 }
 
 List<TrendMedia> getMediaListFromJson(List list) {

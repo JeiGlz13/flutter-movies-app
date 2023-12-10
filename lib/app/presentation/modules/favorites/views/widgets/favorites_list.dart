@@ -4,7 +4,6 @@ import 'package:movies_app/app/domain/enums/trend_type.dart';
 import 'package:movies_app/app/domain/models/trend_media/trend_media.dart';
 import 'package:movies_app/app/presentation/global/utils/get_image_url.dart';
 import 'package:movies_app/app/presentation/global/utils/go_to_media_details.dart';
-import 'package:movies_app/app/presentation/modules/movie/views/movie_view.dart';
 
 class FavoritesList extends StatefulWidget {
   final List<TrendMedia> items;
