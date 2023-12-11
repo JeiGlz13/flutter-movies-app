@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:movies_app/app/data/repositories_implementation/preferences_repository_impl.dart';
+import 'package:movies_app/app/domain/repositories/preferences_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_strategy/url_strategy.dart';
+
 import 'package:movies_app/app/presentation/global/controllers/favorites/favorites_controller.dart';
 import 'package:movies_app/app/presentation/global/controllers/favorites/state/favorites_state.dart';
 import 'package:movies_app/app/presentation/global/controllers/theme_controller.dart';
-import 'package:url_strategy/url_strategy.dart';
 import 'package:movies_app/app/data/repositories_implementation/account_repository_impl.dart';
 import 'package:movies_app/app/data/repositories_implementation/movies_repository_impl.dart';
 import 'package:movies_app/app/data/repositories_implementation/popular_repository_impl.dart';
@@ -27,7 +31,8 @@ import 'package:movies_app/app/domain/repositories/authentication_repository.dar
 import 'package:movies_app/app/domain/repositories/connectivity_repository.dart';
 import 'package:movies_app/app/my_app.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   setPathUrlStrategy();
   final SessionService sessionService = SessionService(const FlutterSecureStorage());
   final Http http = Http(
@@ -37,6 +42,8 @@ void main() {
   );
   final accountService = AccountService(http, sessionService);
 
+  final isDarkMode = WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
+  final sharedPreferences = await SharedPreferences.getInstance();
   runApp(
     MultiProvider(
       providers: [
@@ -44,6 +51,11 @@ void main() {
           create: (_) => AccountRepositoryImpl(
             accountService,
             sessionService,
+          ),
+        ),
+        Provider<PreferencesRepository>(
+          create: (_) => PreferencesRepositoryImpl(
+            sharedPreferences,
           ),
         ),
         Provider<ConnectivityRepository>(
@@ -69,7 +81,14 @@ void main() {
           ),
         ),
         ChangeNotifierProvider<ThemeController>(
-          create: (context) => ThemeController(false),
+          create: (context) {
+            final PreferencesRepository preferencesRepository = context.read();
+            final bool defaultDarkMode = preferencesRepository.isDarkMode ?? isDarkMode;
+            return ThemeController(
+              defaultDarkMode,
+              preferencesRepository: preferencesRepository,
+            );
+          },
         ),
         ChangeNotifierProvider<SessionController>(
           create: (context) => SessionController(
